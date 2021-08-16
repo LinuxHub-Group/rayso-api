@@ -27,6 +27,16 @@ python main.py
 docker run --rm -p 5567:5567 -it ghcr.io/linuxhub-group/rayso-api:latest
 ```
 
+# 贡献
+
+pr之前先检查代码：
+```shell
+pip install flake8 bandit black
+black .
+flake8 . --max-line-length=200
+bandit --recursive .
+```
+
 # TODO
 
 - [ ] 多线程

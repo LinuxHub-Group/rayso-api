@@ -19,6 +19,7 @@ import unittest
 import threading
 
 from browser import new_web_driver
+
 # from browser import new_remote_web_driver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -38,7 +39,8 @@ class RaySo:
         self.webdriver.get("https://rayso-proxy.coolrc.workers.dev")  # 反代地址
 
         # 隐藏拖动控制 和 工具栏
-        self.webdriver.execute_script("""
+        self.webdriver.execute_script(
+            """
         let elem = document.querySelector(".drag-control-points")
         elem.style.display='none';
 
@@ -52,7 +54,8 @@ class RaySo:
         elem.textContent=""
         elem.style.color="#aaaaaa"
 
-        """)
+        """
+        )
         self.lock.release()
 
     def capture(self, content, font="Fira code", padding=26, title="", size=1):
@@ -75,7 +78,9 @@ class RaySo:
         """
         ActionChains(self.webdriver).send_keys("r").perform()  # 随机更换主题
 
-        textarea = self.webdriver.find_element_by_css_selector('.CodeMirror > div > textarea')
+        textarea = self.webdriver.find_element_by_css_selector(
+            ".CodeMirror > div > textarea"
+        )
         textarea.send_keys(Keys.CONTROL + "a")
         textarea.send_keys(Keys.BACKSPACE)
         textarea.send_keys(content)
@@ -88,10 +93,12 @@ class RaySo:
         """
         修改代码块字体
         """
-        self.webdriver.execute_script(f"""
+        self.webdriver.execute_script(
+            f"""
         let elem = document.getElementsByClassName("CodeMirror-code");
         elem[0].style.fontFamily = "{font}";
-        """)
+        """
+        )
         lock.release()
 
     def set_padding(self, padding: int):
@@ -103,10 +110,12 @@ class RaySo:
         :param padding: int, 单位px
         """
 
-        self.webdriver.execute_script(f"""
+        self.webdriver.execute_script(
+            f"""
         let elem = document.querySelector("#frame")
         elem.style.padding="{padding}px"
-        """)
+        """
+        )
         lock.release()
 
     def set_title(self, title: str):
@@ -116,10 +125,12 @@ class RaySo:
         设置代码块标题
         """
 
-        self.webdriver.execute_script(f"""
+        self.webdriver.execute_script(
+            f"""
         let elem = document.querySelector(".title")
         elem.textContent="{title}"
-        """)
+        """
+        )
         lock.release()
 
     def set_size(self, size: float):
@@ -133,10 +144,12 @@ class RaySo:
         if size < 1 or size > 2:
             size = 1
 
-        self.webdriver.execute_script(f"""
+        self.webdriver.execute_script(
+            f"""
         let elem = document.querySelector("#frame")
         elem.style.scale = {size}
-        """)
+        """
+        )
         lock.release()
 
     # def __del__(self):
@@ -150,7 +163,6 @@ class RaySo:
 
 
 class TestRaySo(unittest.TestCase):
-
     def test_capture(self):
         rayso = RaySo()
         rayso.connect()
@@ -164,7 +176,7 @@ class TestRaySo(unittest.TestCase):
         if sys != "Windows":
             command = "taskkill /F /T /IM "
             command = command + "firefox.exe"
-            os.system(command)
+            os.system(command)  # nosec
         else:
             command = "pkill gecko && pkill firefox"
-            os.system(command)
+            os.system(command)  # nosec

@@ -28,42 +28,42 @@ from rayso import RaySo
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route("/")
 def hello_world():
-    return 'Hello World!'
+    return "Hello World!"
 
 
-@app.route('/rayso', methods=['POST', 'GET'])
+@app.route("/rayso", methods=["POST", "GET"])
 def capture_rayso():
     content = request_parse(request)
 
     try:
         args = {
-            'content': content.get('content'),
-            'font': content.get('font'),
-            'padding': parse_float(content.get('padding')),
-            'title': content.get('title'),
-            'size': parse_float(content.get('size'))
+            "content": content.get("content"),
+            "font": content.get("font"),
+            "padding": parse_float(content.get("padding")),
+            "title": content.get("title"),
+            "size": parse_float(content.get("size")),
         }
 
         for k in list(args.keys()):
             if args[k] is None:
                 del args[k]
 
-        if not args['content']:
-            return {'ok': 400, 'msg': 'no content!', 'data': None}
+        if not args["content"]:
+            return {"ok": 400, "msg": "no content!", "data": None}
 
-        args['content'] = base64.b64decode(args['content']).decode("utf-8")
+        args["content"] = base64.b64decode(args["content"]).decode("utf-8")
 
-        print(args['content'] + '\n')
+        print(args["content"] + "\n")
 
         global rayso
 
         base64_img = rayso.capture(**args)
-        return {'ok': 200, 'msg': 'OK', 'data': base64_img}
+        return {"ok": 200, "msg": "OK", "data": base64_img}
 
     except Exception as e:
-        return {'ok': 500, 'msg': format(e), 'data': None}
+        return {"ok": 500, "msg": format(e), "data": None}
 
 
 def on_exit_app():  # 由于quit() 执行有问题，所以退出时候直接杀死浏览器进程
@@ -71,18 +71,18 @@ def on_exit_app():  # 由于quit() 执行有问题，所以退出时候直接杀
     if sys == "Windows":
         command = "taskkill /F /T /IM "
         command = command + "firefox.exe"
-        os.system(command)
+        os.system(command)  # nosec
     else:
         command = "pkill geckodriver && pkill firefox"
-        os.system(command)
+        os.system(command)  # nosec
 
 
 def request_parse(req_data):
     """解析请求数据并以json形式返回"""
     data = {}
-    if req_data.method == 'POST':
+    if req_data.method == "POST":
         data = req_data.json
-    elif req_data.method == 'GET':
+    elif req_data.method == "GET":
         data = req_data.args
     return data
 
@@ -93,12 +93,12 @@ def parse_float(data):
     return float(data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("starting...")
     rayso = RaySo()
     atexit.register(on_exit_app)
     rayso.connect()
     port = 5567
-    print('running on http://127.0.0.1:' + str(port) + '/')
+    print("running on http://127.0.0.1:" + str(port) + "/")
     serve(app, port=port)
     # # rayso.__del__()

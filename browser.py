@@ -19,23 +19,25 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.options import Options
 
 
-def new_web_driver(http_proxy=None, socks5_proxy=None, socks_username=None, socks_password=None) -> webdriver.Firefox:
+def new_web_driver(
+    http_proxy=None, socks5_proxy=None, socks_username=None, socks_password=None
+) -> webdriver.Firefox:
     ffoptions = Options()
     ffoptions.add_argument("--headless")  #
     ffoptions.add_argument("window-size=2560,1440")
     if http_proxy is not None:
-        webdriver.DesiredCapabilities.FIREFOX['proxy'] = {
+        webdriver.DesiredCapabilities.FIREFOX["proxy"] = {
             "httpProxy": http_proxy,
             "sslProxy": http_proxy,
-            "proxyType": "MANUAL"
+            "proxyType": "MANUAL",
         }
         return webdriver.Firefox(options=ffoptions)
     if socks5_proxy is not None:
-        webdriver.DesiredCapabilities.FIREFOX['proxy'] = {
+        webdriver.DesiredCapabilities.FIREFOX["proxy"] = {
             "socks_proxy": socks5_proxy,
-            'socksUsername': socks_username,
-            'socksPassword': socks_password,
-            "proxyType": "MANUAL"
+            "socksUsername": socks_username,
+            "socksPassword": socks_password,
+            "proxyType": "MANUAL",
         }
         return webdriver.Firefox(options=ffoptions)
     return webdriver.Firefox(options=ffoptions)
@@ -43,6 +45,6 @@ def new_web_driver(http_proxy=None, socks5_proxy=None, socks_username=None, sock
 
 def new_remote_web_driver(url: str):
     driver = webdriver.Remote(
-        command_executor=url,
-        desired_capabilities=DesiredCapabilities.CHROME)  # firefox有bug，辣鸡mozilla
+        command_executor=url, desired_capabilities=DesiredCapabilities.CHROME
+    )  # firefox有bug，辣鸡mozilla
     return driver
