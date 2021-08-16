@@ -66,9 +66,6 @@ def capture_rayso():
         return {'ok': 500, 'msg': format(e), 'data': None}
 
 
-rayso = RaySo()
-
-
 def on_exit_app():  # 由于quit() 执行有问题，所以退出时候直接杀死浏览器进程
     sys = platform.system()
     if sys == "Windows":
@@ -97,6 +94,8 @@ def parse_float(data):
 
 
 if __name__ == '__main__':
+    print("starting...")
+    rayso = RaySo()
     atexit.register(on_exit_app)
     rayso.connect()
     port = 5567

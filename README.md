@@ -17,6 +17,16 @@
 - `title`: 标题
 - `size`: 缩放倍数： 1-2，原图为2k屏渲染
 
+# 使用
+
+```shell
+pip install -r requirements.txt
+python main.py
+
+# docker
+docker run --rm -p 5567:5567 -it ghcr.io/linuxhub-group/rayso-api:latest
+```
+
 # TODO
 
 - [ ] 多线程
