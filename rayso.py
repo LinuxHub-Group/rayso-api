@@ -115,7 +115,7 @@ class RaySo:
         )
         textarea.send_keys(Keys.CONTROL + "a")
         textarea.send_keys(Keys.BACKSPACE)
-        textarea.send_keys(content)
+        self.sendKeysWithEmojis(textarea, content)
         textarea.send_keys(Keys.ESCAPE)
         lock.release()
 
@@ -186,6 +186,21 @@ class RaySo:
 
     # def __del__(self):
     #     self.quit()
+
+    def sendKeysWithEmojis(self, element, text):
+        script = """var
+        elm = arguments[0], \
+              txt = arguments[1];
+        elm.value += txt;
+        elm.dispatchEvent(new
+        Event('keydown', {bubbles: true}));
+        elm.dispatchEvent(new
+        Event('keypress', {bubbles: true}));
+        elm.dispatchEvent(new
+        Event('input', {bubbles: true}));
+        elm.dispatchEvent(new
+        Event('keyup', {bubbles: true}));"""
+        self.webdriver.execute_script(script, element, text)
 
     def quit(self):
         try:

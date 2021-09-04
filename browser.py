@@ -24,6 +24,7 @@ def new_web_driver(
 ) -> webdriver.Chrome:
     chrome_options = Options()
     chrome_options.add_argument("--no-sandbox")  # 允许root下使用
+    chrome_options.add_argument("--log-level=3")
     chrome_options.add_argument("--headless")  #
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("window-size=2560,1440")
