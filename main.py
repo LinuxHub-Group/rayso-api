@@ -36,34 +36,29 @@ def hello_world():
 @app.route("/raysopic", methods=["GET"])
 def capture_rayso_pic():
     content = request_parse(request)
+    args = {
+        "content": content.get("content"),
+        "font": content.get("font"),
+        "padding": parse_float(content.get("padding")),
+        "title": content.get("title"),
+        "size": parse_float(content.get("size")),
+    }
 
-    try:
-        args = {
-            "content": content.get("content"),
-            "font": content.get("font"),
-            "padding": parse_float(content.get("padding")),
-            "title": content.get("title"),
-            "size": parse_float(content.get("size")),
-        }
+    for k in list(args.keys()):
+        if args[k] is None:
+            del args[k]
 
-        for k in list(args.keys()):
-            if args[k] is None:
-                del args[k]
+    if not args["content"]:
+        return {"ok": 400, "msg": "no content!", "data": None}
 
-        if not args["content"]:
-            return {"ok": 400, "msg": "no content!", "data": None}
+    args["content"] = base64.b64decode(args["content"]).decode("utf-8")
 
-        args["content"] = base64.b64decode(args["content"]).decode("utf-8")
+    print(args["content"] + "\n")
 
-        print(args["content"] + "\n")
+    global rayso
 
-        global rayso
-
-        rayso.capture_img(**args)
-        return send_from_directory("./", "test.png")
-
-    except Exception as e:
-        return {"ok": 500, "msg": format(e), "data": None}
+    rayso.capture_img(**args)
+    return send_from_directory("./", "screenshot.png")
 
 
 @app.route("/rayso", methods=["POST", "GET"])
@@ -103,10 +98,10 @@ def on_exit_app():  # 由于quit() 执行有问题，所以退出时候直接杀
     sys = platform.system()
     if sys == "Windows":
         command = "taskkill /F /T /IM "
-        command = command + "firefox.exe"
+        command = command + "chromium-browser.exe"
         os.system(command)  # nosec
     else:
-        command = "pkill geckodriver && pkill firefox"
+        command = "pkill chromedriver && pkill chromium-browser"
         os.system(command)  # nosec
 
 

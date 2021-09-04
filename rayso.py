@@ -18,6 +18,10 @@ import platform
 import unittest
 import threading
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from browser import new_web_driver
 
 # from browser import new_remote_web_driver
@@ -80,7 +84,7 @@ class RaySo:
 
         box = self.webdriver.find_element_by_xpath('//*[@id="frame"]')
         self.lock.release()
-        return box.screenshot("test.png")
+        return box.screenshot("screenshot.png")
 
     def set_content(self, content: str):
         lock = threading.Lock()
@@ -89,6 +93,17 @@ class RaySo:
         填入内容
         """
         ActionChains(self.webdriver).send_keys("r").perform()  # 随机更换主题
+
+        # Chrome需要激活textarea才能开始输入
+        textarea = WebDriverWait(self.webdriver, 10).until(
+            EC.element_to_be_clickable(
+                (
+                    By.CSS_SELECTOR,
+                    "#frame > div.app-frame-container > div.app-frame > div.vue-codemirror.code-editor > div",
+                )
+            )
+        )
+        textarea.click()
 
         textarea = self.webdriver.find_element_by_css_selector(
             ".CodeMirror > div > textarea"

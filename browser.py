@@ -16,31 +16,33 @@
 
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 
 
 def new_web_driver(
     http_proxy=None, socks5_proxy=None, socks_username=None, socks_password=None
-) -> webdriver.Firefox:
-    ffoptions = Options()
-    ffoptions.add_argument("--headless")  #
-    ffoptions.add_argument("window-size=2560,1440")
-    if http_proxy is not None:
-        webdriver.DesiredCapabilities.FIREFOX["proxy"] = {
-            "httpProxy": http_proxy,
-            "sslProxy": http_proxy,
-            "proxyType": "MANUAL",
-        }
-        return webdriver.Firefox(options=ffoptions)
-    if socks5_proxy is not None:
-        webdriver.DesiredCapabilities.FIREFOX["proxy"] = {
-            "socks_proxy": socks5_proxy,
-            "socksUsername": socks_username,
-            "socksPassword": socks_password,
-            "proxyType": "MANUAL",
-        }
-        return webdriver.Firefox(options=ffoptions)
-    return webdriver.Firefox(options=ffoptions)
+) -> webdriver.Chrome:
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  #
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("window-size=2560,1440")
+    # TODO: chrome proxy
+    # if http_proxy is not None:
+    #     webdriver.DesiredCapabilities.FIREFOX["proxy"] = {
+    #         "httpProxy": http_proxy,
+    #         "sslProxy": http_proxy,
+    #         "proxyType": "MANUAL",
+    #     }
+    #     return webdriver.Chrome(options=chrome_options)
+    # if socks5_proxy is not None:
+    #     webdriver.DesiredCapabilities.FIREFOX["proxy"] = {
+    #         "socks_proxy": socks5_proxy,
+    #         "socksUsername": socks_username,
+    #         "socksPassword": socks_password,
+    #         "proxyType": "MANUAL",
+    #     }
+    #     return webdriver.Firefox(options=ffoptions)
+    return webdriver.Chrome(options=chrome_options)
 
 
 def new_remote_web_driver(url: str):
