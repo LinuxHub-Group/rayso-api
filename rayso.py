@@ -20,7 +20,7 @@ import threading
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 
 from browser import new_web_driver
 
@@ -64,27 +64,32 @@ class RaySo:
 
     def capture(self, content, font="Fira code", padding=26, title="", size=1):
         self.lock.acquire()
-        self.set_content(content)
-        self.set_font(font)
-        self.set_padding(padding)
-        self.set_title(title)
-        self.set_size(size)
+        try:
+            self.set_content(content)
+            self.set_font(font)
+            self.set_padding(padding)
+            self.set_title(title)
+            self.set_size(size)
 
-        box = self.webdriver.find_element_by_xpath('//*[@id="frame"]')
-        self.lock.release()
+            box = self.webdriver.find_element_by_xpath('//*[@id="frame"]')
+        finally:
+            self.lock.release()
         return box.screenshot_as_base64
 
     def capture_img(self, content, font="Fira code", padding=26, title="", size=1):
         self.lock.acquire()
-        self.set_content(content)
-        self.set_font(font)
-        self.set_padding(padding)
-        self.set_title(title)
-        self.set_size(size)
+        try:
+            self.set_content(content)
+            self.set_font(font)
+            self.set_padding(padding)
+            self.set_title(title)
+            self.set_size(size)
 
-        box = self.webdriver.find_element_by_xpath('//*[@id="frame"]')
-        self.lock.release()
-        return box.screenshot("screenshot.png")
+            box = self.webdriver.find_element_by_xpath('//*[@id="frame"]')
+            return box.screenshot("screenshot.png")
+        finally:
+            self.lock.release()
+            return False
 
     def set_content(self, content: str):
         lock = threading.Lock()
@@ -96,7 +101,7 @@ class RaySo:
 
         # Chrome需要激活textarea才能开始输入
         textarea = WebDriverWait(self.webdriver, 10).until(
-            EC.element_to_be_clickable(
+            ec.element_to_be_clickable(
                 (
                     By.CSS_SELECTOR,
                     "#frame > div.app-frame-container > div.app-frame > div.vue-codemirror.code-editor > div",
