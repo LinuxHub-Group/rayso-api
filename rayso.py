@@ -70,6 +70,18 @@ class RaySo:
         self.lock.release()
         return box.screenshot_as_base64
 
+    def capture_img(self, content, font="Fira code", padding=26, title="", size=1):
+        self.lock.acquire()
+        self.set_content(content)
+        self.set_font(font)
+        self.set_padding(padding)
+        self.set_title(title)
+        self.set_size(size)
+
+        box = self.webdriver.find_element_by_xpath('//*[@id="frame"]')
+        self.lock.release()
+        return box.screenshot("test.png")
+
     def set_content(self, content: str):
         lock = threading.Lock()
         lock.acquire()
